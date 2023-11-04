@@ -26,11 +26,13 @@ class MakerViewElements{
     }
     
     func makeTF(background: UIColor = .clear,
-                translatesAutoresizingMaskIntoConstraints: Bool = false
+                translatesAutoresizingMaskIntoConstraints: Bool = false,
+                isSecureTextEntry: Bool = true
     ) -> UITextField {
         let view = UITextField()
         view.backgroundColor = background
         view.translatesAutoresizingMaskIntoConstraints = translatesAutoresizingMaskIntoConstraints
+        view.isSecureTextEntry = isSecureTextEntry
         return view
     }
     

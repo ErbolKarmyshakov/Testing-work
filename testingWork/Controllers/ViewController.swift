@@ -18,8 +18,6 @@ class ViewController: UIViewController {
     private let passwordTf = MakerViewElements.shared.makeTF()
     private let eyeBTn = MakerViewElements.shared.makeBtn(tintColor: UIColor(red: 245/255, green: 72/255, blue: 74/255, alpha: 1))
     
-    private var isPasswordVisible = true
-    
     private let passwordUnderLine = MakerViewElements.shared.makeView()
     
     private let confirmLbl = MakerViewElements.shared.makeLbl(text: "Confirm Password",
@@ -88,6 +86,7 @@ class ViewController: UIViewController {
             passwordTf.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 18),
             passwordTf.heightAnchor.constraint(equalToConstant: 30)
         ])
+        passwordTf.addTarget(self, action: #selector(continueBtnTapped), for: .editingChanged)
     }
     
     private func setUpConstraintsForEyeBTn(){
@@ -102,8 +101,7 @@ class ViewController: UIViewController {
     }
     
     @objc func eyeBtnTapped(_ sender: UIButton) {
-        isPasswordVisible.toggle()
-        passwordTf.isSecureTextEntry = isPasswordVisible
+        passwordTf.isSecureTextEntry = !passwordTf.isSecureTextEntry
     }
     
     private func setUpConstraintsForPasswordUnderLine(){
@@ -132,6 +130,7 @@ class ViewController: UIViewController {
             confirmTf.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 18),
             confirmTf.heightAnchor.constraint(equalToConstant: 30)
         ])
+        confirmTf.addTarget(self, action: #selector(continueBtnTapped), for: .editingChanged)
     }
     
     private func setUpConstraintsForEyeBtn(){
@@ -146,8 +145,7 @@ class ViewController: UIViewController {
     }
     
     @objc func eyeBTnTapped(_ sender: UIButton) {
-        isPasswordVisible.toggle()
-        confirmTf.isSecureTextEntry = isPasswordVisible
+        confirmTf.isSecureTextEntry = !confirmTf.isSecureTextEntry
     }
     
     private func setUpConstraintsForConfirmUnderLine(){
@@ -191,27 +189,35 @@ class ViewController: UIViewController {
             continueBtn.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -18),
             continueBtn.heightAnchor.constraint(equalToConstant: 58)
         ])
-        continueBtn.addTarget(self, action: #selector(continueBtnTapped), for: .touchUpInside)
+        continueBtn.addTarget(self, action: #selector(continueTappedBtn), for: .touchUpInside)
         continueBtn.isEnabled = false
     }
-    
-    @objc func continueBtnTapped(){
+ 
+    @objc func continueBtnTapped() {
+
+        if passwordTf.text == confirmTf.text  {
+               continueBtn.backgroundColor = UIColor(red: 245/255, green: 72/255, blue: 74/255, alpha: 1)
+               continueBtn.isEnabled = true
+           } else {
+               continueBtn.backgroundColor = .gray
+               continueBtn.isEnabled = false
+           }
         
-        if !(passwordTf.text?.isEmpty ?? true) && (confirmTf.text?.isEmpty ?? true) && passwordTf.text == confirmTf.text  {
-            passwordTf.placeholder = "Заполните, пожалуйста "
-            confirmTf.placeholder = "Заполните, пожалуйста"
-            continueBtn.backgroundColor = .gray
-            continueBtn.isEnabled = false
-        }else {
-            
+        if passwordTf.text!.count >= 8 && confirmTf.text!.count >= 8 {
             continueBtn.backgroundColor = UIColor(red: 245/255, green: 72/255, blue: 74/255, alpha: 1)
             continueBtn.isEnabled = true
-            let vc = NotificationViewController()
-            navigationController?.pushViewController(vc, animated: true )
+        }else{
+            continueBtn.backgroundColor = .gray
+            continueBtn.isEnabled = false
         }
-        
-        
+       }
+    
+    @objc func continueTappedBtn(){
+        let next = NotificationViewController()
+        navigationController?.pushViewController(next, animated: true)
     }
+   
+
 }
 
 extension UIView {
